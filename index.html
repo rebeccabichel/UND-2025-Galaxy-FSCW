@@ -167,6 +167,22 @@ canvas{display:block;cursor:crosshair}
 .d-title{font-size:14px;font-weight:700;color:#d0ecff;margin-bottom:14px;line-height:1.38}
 .d-lbl{font-size:9px;color:#3a5878;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
 .d-val{font-size:12px;color:#7a9ab8;margin-bottom:10px}
+.d-author-link{
+  font-size:12px;color:#7a9ab8;margin-bottom:10px;
+  cursor:pointer;display:inline-flex;align-items:center;gap:6px;
+  border-bottom:1px dotted rgba(100,160,255,.3);
+  transition:color .18s, border-color .18s;
+}
+.d-author-link:hover{color:#c0e0ff;border-color:rgba(100,160,255,.7)}
+.d-author-link .const-icon{font-size:10px;opacity:.6}
+.d-college-link{
+  font-size:12px;color:#7a9ab8;margin-bottom:10px;
+  text-decoration:none;display:inline-flex;align-items:center;gap:5px;
+  border-bottom:1px dotted rgba(100,160,255,.3);
+  transition:color .18s, border-color .18s;
+}
+.d-college-link:hover{color:#c0e0ff;border-color:rgba(100,160,255,.7)}
+.d-college-link .ext-icon{font-size:9px;opacity:.55}
 .d-cit{font-size:11px;color:#8aaac0;line-height:1.65;padding:11px 14px;
   background:rgba(20,50,100,.25);border-radius:8px;border-left:3px solid;margin-top:3px}
 .d-cit a{color:#60aaff;text-decoration:none}
@@ -203,6 +219,39 @@ canvas{display:block;cursor:crosshair}
 }
 #minimap canvas{display:block}
 #mini-lbl{position:absolute;bottom:4px;left:0;right:0;text-align:center;font-size:7px;color:#2e4f68;letter-spacing:1px}
+
+/* ── KEYBOARD SHORTCUT PANEL ── */
+#kb-panel{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  z-index:200;
+  background:rgba(0,8,28,.92);border:1px solid rgba(60,120,220,.2);
+  border-radius:12px;backdrop-filter:blur(10px);
+  padding:0;overflow:hidden;transition:all .3s ease;
+  white-space:nowrap;
+}
+#kb-header{
+  display:flex;align-items:center;gap:10px;padding:9px 16px;
+  cursor:pointer;user-select:none;
+}
+#kb-header:hover{background:rgba(60,120,220,.1)}
+#kb-header-label{font-size:9px;color:#4a7aaa;letter-spacing:2px;text-transform:uppercase}
+#kb-toggle-btn{background:none;border:none;color:#3a6080;font-size:13px;
+  cursor:pointer;line-height:1;padding:0;transition:transform .3s ease}
+#kb-panel.collapsed #kb-toggle-btn{transform:rotate(-90deg)}
+#kb-body{
+  display:flex;gap:0;border-top:1px solid rgba(60,120,220,.12);
+  max-height:200px;overflow:hidden;transition:all .3s ease;
+}
+#kb-panel.collapsed #kb-body{max-height:0;pointer-events:none}
+.kb-group{padding:10px 16px;border-right:1px solid rgba(60,120,220,.1)}
+.kb-group:last-child{border-right:none}
+.kb-group-title{font-size:8px;color:#3a5878;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:7px}
+.kb-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.kb-key{background:rgba(80,120,200,.18);border:1px solid rgba(80,140,220,.3);
+  border-radius:4px;padding:2px 7px;font-size:10px;color:#90b8d8;
+  font-family:monospace;white-space:nowrap;min-width:28px;text-align:center}
+.kb-desc{font-size:10px;color:#5a7a90}
 
 #loading{position:fixed;inset:0;z-index:999;background:#000814;
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px}
@@ -271,6 +320,43 @@ canvas{display:block;cursor:crosshair}
     <div id="stat-lbl">total works</div>
     <div id="stat-oa"></div>
     <div id="const-info"></div>
+  </div>
+</div>
+
+<div id="kb-panel">
+  <div id="kb-header" onclick="toggleKB()">
+    <span id="kb-header-label">⌨ Keyboard Shortcuts</span>
+    <button id="kb-toggle-btn" title="Collapse">▾</button>
+  </div>
+  <div id="kb-body">
+    <div class="kb-group">
+      <div class="kb-group-title">Navigation</div>
+      <div class="kb-row"><span class="kb-key">Space</span><span class="kb-desc">Zoom out to full galaxy</span></div>
+      <div class="kb-row"><span class="kb-key">H</span><span class="kb-desc">Home — full galaxy view</span></div>
+      <div class="kb-row"><span class="kb-key">+</span><span class="kb-desc">Zoom in</span></div>
+      <div class="kb-row"><span class="kb-key">−</span><span class="kb-desc">Zoom out</span></div>
+      <div class="kb-row"><span class="kb-key">↑ ↓ ← →</span><span class="kb-desc">Pan the galaxy</span></div>
+    </div>
+    <div class="kb-group">
+      <div class="kb-group-title">Views</div>
+      <div class="kb-row"><span class="kb-key">1</span><span class="kb-desc">Spiral galaxy</span></div>
+      <div class="kb-row"><span class="kb-key">2</span><span class="kb-desc">Mixed galaxy</span></div>
+      <div class="kb-row"><span class="kb-key">3</span><span class="kb-desc">UND formation</span></div>
+    </div>
+    <div class="kb-group">
+      <div class="kb-group-title">Search & Panel</div>
+      <div class="kb-row"><span class="kb-key">/</span><span class="kb-desc">Focus search bar</span></div>
+      <div class="kb-row"><span class="kb-key">S</span><span class="kb-desc">Focus search bar</span></div>
+      <div class="kb-row"><span class="kb-key">Esc</span><span class="kb-desc">Close panel · clear search</span></div>
+    </div>
+    <div class="kb-group">
+      <div class="kb-group-title">Tip</div>
+      <div class="kb-row" style="max-width:160px">
+        <span class="kb-desc" style="color:#3a5878;font-style:italic;line-height:1.4">
+          Shortcuts are disabled while typing in the search box
+        </span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -863,10 +949,44 @@ function openDetail(s){
   dc.textContent='✦ '+s.cluster; dc.style.color=col;
   document.getElementById('d-cat').textContent=s.category+' · '+s.type;
   document.getElementById('d-title').textContent=s.title;
-  document.getElementById('d-auth').textContent=s.author+
-    (multiAuthorSet.has(s.author)?` (${authorIndex[s.author].length} works this year)`:'');
+  // ── Clickable author name — shows/refreshes their constellation ──
+  const authEl = document.getElementById('d-auth');
+  const workCount = multiAuthorSet.has(s.author) ? authorIndex[s.author].length : 1;
+  const hasMulti = multiAuthorSet.has(s.author);
+  if(hasMulti){
+    authEl.innerHTML = '';
+    const authLink = document.createElement('span');
+    authLink.className = 'd-author-link';
+    authLink.title = 'Click to highlight this author\'s constellation in the galaxy';
+    authLink.innerHTML =
+      s.author +
+      ` <span class="const-icon">✦ ${workCount} works — view constellation</span>`;
+    authLink.addEventListener('click', ()=>{
+      showConstellation(s.author);
+      flyToStars(authorIndex[s.author]);
+    });
+    authEl.appendChild(authLink);
+  } else {
+    authEl.textContent = s.author;
+  }
+
   document.getElementById('d-dept').textContent=s.dept;
-  document.getElementById('d-coll').textContent=s.college;
+
+  // ── Clickable college name — links to UND college webpage ──
+  const collEl = document.getElementById('d-coll');
+  collEl.innerHTML = '';
+  const collegeUrl = COLLEGE_URLS[s.college];
+  if(collegeUrl){
+    const collLink = document.createElement('a');
+    collLink.className = 'd-college-link';
+    collLink.href = collegeUrl;
+    collLink.target = '_blank';
+    collLink.title = 'Visit ' + s.college + ' website';
+    collLink.innerHTML = s.college + ' <span class="ext-icon">↗</span>';
+    collEl.appendChild(collLink);
+  } else {
+    collEl.textContent = s.college;
+  }
   const cit=document.getElementById('d-cit');
   cit.innerHTML=s.citation; cit.style.borderLeftColor=col;
 
@@ -1041,12 +1161,63 @@ document.getElementById('det-x').addEventListener('click',()=>{
   selected=null; clearConstellation(); document.getElementById('detail').classList.remove('open');
 });
 document.addEventListener('keydown',e=>{
+  // Don't fire shortcuts when typing in the search box
+  const inSearch = document.activeElement === document.getElementById('search');
+
   if(e.key==='Escape'){
-    selected=null; clearConstellation(); document.getElementById('detail').classList.remove('open');
+    // Close panel, clear search, clear constellation
+    selected=null; clearConstellation();
+    document.getElementById('detail').classList.remove('open');
     query=''; si.value=''; clrBtn.style.display='none';
     document.getElementById('search-info').textContent='';
+    document.getElementById('search').blur();
+  }
+
+  if(!inSearch){
+    // ── ZOOM OUT / HOME ───────────────────────────────────
+    // Space bar OR H key OR 0 key → zoom all the way out to full galaxy view
+    if(e.key===' ' || e.key==='h' || e.key==='H' || e.key==='0'){
+      e.preventDefault();
+      tZ=0.9; tCX=0; tCY=0;
+    }
+
+    // ── ZOOM IN/OUT with + / - keys ───────────────────────
+    if(e.key==='+' || e.key==='=' || e.key===']'){
+      e.preventDefault();
+      const nz = Math.min(14, tZ*1.25);
+      tZ=nz;
+    }
+    if(e.key==='-' || e.key==='['){
+      e.preventDefault();
+      const nz = Math.max(0.15, tZ*0.8);
+      tZ=nz;
+    }
+
+    // ── PAN with arrow keys ───────────────────────────────
+    const panStep = 80/zoom;
+    if(e.key==='ArrowLeft')  { e.preventDefault(); tCX -= panStep; }
+    if(e.key==='ArrowRight') { e.preventDefault(); tCX += panStep; }
+    if(e.key==='ArrowUp')    { e.preventDefault(); tCY -= panStep; }
+    if(e.key==='ArrowDown')  { e.preventDefault(); tCY += panStep; }
+
+    // ── SWITCH VIEWS with number keys ─────────────────────
+    if(e.key==='1'){ setMode('spiral'); updateViewBtns('vt-spiral'); }
+    if(e.key==='2'){ setMode('galaxy'); updateViewBtns('vt-mixed'); }
+    if(e.key==='3'){ setMode('und');    updateViewBtns('vt-und'); tZ=0.42; tCX=0; tCY=0; }
+
+    // ── SEARCH focus with / or S ──────────────────────────
+    if(e.key==='/' || e.key==='s' || e.key==='S'){
+      e.preventDefault();
+      document.getElementById('search').focus();
+    }
   }
 });
+
+function updateViewBtns(activeId){
+  ['vt-spiral','vt-mixed','vt-und'].forEach(id=>{
+    document.getElementById(id).classList.toggle('active', id===activeId);
+  });
+}
 
 // ── LEGEND ────────────────────────────────────────────────
 function buildLegend(){
@@ -1095,6 +1266,18 @@ setTimeout(()=>{
 requestAnimationFrame(loop);
 
 // ── COLLAPSIBLE PANELS ────────────────────────────────────
+function toggleKB(){
+  const el = document.getElementById('kb-panel');
+  const body = document.getElementById('kb-body');
+  const isCollapsed = el.classList.toggle('collapsed');
+  if(!isCollapsed){
+    body.style.maxHeight = body.scrollHeight + 'px';
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    requestAnimationFrame(()=>{ body.style.maxHeight = '0'; });
+  }
+}
+
 function toggleLegend(){
   const el = document.getElementById('legend');
   const isCollapsed = el.classList.toggle('collapsed');
@@ -1124,8 +1307,10 @@ function toggleStats(){
 window.addEventListener('load', ()=>{
   const lb = document.getElementById('legend-body');
   const sb = document.getElementById('stats-body');
+  const kb = document.getElementById('kb-body');
   if(lb) lb.style.maxHeight = lb.scrollHeight + 'px';
   if(sb) sb.style.maxHeight = sb.scrollHeight + 'px';
+  if(kb) kb.style.maxHeight = kb.scrollHeight + 'px';
 });
 
 
