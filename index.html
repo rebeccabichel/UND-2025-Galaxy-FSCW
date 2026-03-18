@@ -52,10 +52,11 @@ canvas{display:block;cursor:crosshair}
   /* Collapsed: only header visible, no invisible area blocking touches */
 }
 #legend.collapsed{
-  /* Let clicks pass through the invisible collapsed body area */
+  /* Shrink to just the header height so no invisible area blocks the canvas */
+  max-height:42px;
   pointer-events:none;
 }
-/* But keep the header itself clickable */
+/* Keep the header itself fully clickable */
 #legend.collapsed #legend-header{
   pointer-events:all;
 }
@@ -81,6 +82,7 @@ canvas{display:block;cursor:crosshair}
   padding-bottom:0;
   opacity:0;
   pointer-events:none;
+  visibility:hidden;
 }
 #legend h4{font-size:9px;color:#3a6080;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
 .leg-item{display:flex;align-items:center;gap:8px;margin-bottom:6px;
@@ -114,6 +116,8 @@ canvas{display:block;cursor:crosshair}
   transition:all .3s ease;
 }
 #stats.collapsed{
+  /* Shrink to just the header height so no invisible area blocks the canvas */
+  max-height:42px;
   pointer-events:none;
 }
 #stats.collapsed #stats-header{
@@ -141,6 +145,7 @@ canvas{display:block;cursor:crosshair}
   padding-bottom:0;
   opacity:0;
   pointer-events:none;
+  visibility:hidden;
 }
 #stats h4{font-size:9px;color:#3a6080;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:none}
 #stat-num{font-size:26px;font-weight:300;color:#90caff;line-height:1}
@@ -1283,11 +1288,16 @@ function toggleLegend(){
   const isCollapsed = el.classList.toggle('collapsed');
   const body = document.getElementById('legend-body');
   if(!isCollapsed){
-    // expanding: set max-height to scrollHeight so transition works
+    // Expanding: remove the height cap, animate body back in
+    el.style.maxHeight = '';
     body.style.maxHeight = body.scrollHeight + 'px';
+    body.style.opacity  = '1';
+    body.style.pointerEvents = 'auto';
   } else {
-    body.style.maxHeight = body.scrollHeight + 'px'; // set current first
-    requestAnimationFrame(()=>{ body.style.maxHeight = '0'; });
+    // Collapsing: animate body out, then let CSS max-height:42px take over
+    body.style.maxHeight = '0';
+    body.style.opacity  = '0';
+    body.style.pointerEvents = 'none';
   }
 }
 
@@ -1296,10 +1306,16 @@ function toggleStats(){
   const isCollapsed = el.classList.toggle('collapsed');
   const body = document.getElementById('stats-body');
   if(!isCollapsed){
+    // Expanding
+    el.style.maxHeight = '';
     body.style.maxHeight = body.scrollHeight + 'px';
+    body.style.opacity  = '1';
+    body.style.pointerEvents = 'auto';
   } else {
-    body.style.maxHeight = body.scrollHeight + 'px';
-    requestAnimationFrame(()=>{ body.style.maxHeight = '0'; });
+    // Collapsing
+    body.style.maxHeight = '0';
+    body.style.opacity  = '0';
+    body.style.pointerEvents = 'none';
   }
 }
 
